@@ -1,3 +1,11 @@
 #!/bin/bash
-cd /sys/devices/platform/cros_ec_lpc.0/cros-ec-dev.0/chromeos/cros_ec/lightbar
-echo run > sequence
+path=$1
+if [ " $path" = " " ]; then
+	path=$(sh init.sh)
+fi
+
+if [ " $path" = " " ]; then
+	echo "reset-lightbar.sh: Could not find path!"
+else
+	echo run > "$path/sequence"
+fi
