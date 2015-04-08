@@ -1,7 +1,7 @@
 #!/bin/bash
 
 count=3
-speed=0.1
+speed=0.5
 path=$(sh init.sh)
 
 for i in `seq 1 $count`
