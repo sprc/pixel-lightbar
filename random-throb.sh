@@ -1,54 +1,92 @@
 #!/bin/bash
 
-count=2500
-speed=0.1
+if [ " $1" = " " ]; then
+	count=2500
+else
+	count=$1
+fi
+
+if [ " $2" = " " ]; then
+	speed=0.1
+else
+	speed=$2
+fi
+
+if [ " $3" = " " ]; then
+	minR=0
+	maxR=100
+else
+	minR=$(echo $3 | cut -d\- -f1)
+	maxR=$(echo $3 | cut -d\- -f2)
+fi
+
+if [ " $4" = " " ]; then
+        minG=0
+        maxG=100
+else
+        minG=$(echo $4 | cut -d\- -f1)
+        maxG=$(echo $4 | cut -d\- -f2)
+fi
+
+if [ " $5" = " " ]; then
+        minB=0
+        maxB=100
+else
+        minB=$(echo $5 | cut -d\- -f1)
+        maxB=$(echo $5 | cut -d\- -f2)
+fi
+
 path=$(sh init.sh)
 
-R=$(sh rand255.sh)
-G=$(sh rand255.sh)
-B=$(sh rand255.sh)
+R=$(sh rand.sh $minR $maxR)
+G=$(sh rand.sh $minG $maxG)
+B=$(sh rand.sh $minB $maxB)
 
 for i in `seq 1 $count`
 do
 	sh cycle.sh $path
 
-	newR=$(sh rand255.sh)
-	newG=$(sh rand255.sh)
-	newB=$(sh rand255.sh)
+	newR=$(sh rand.sh $minR $maxR)
+	newG=$(sh rand.sh $minG $maxG)
+	newB=$(sh rand.sh $minB $maxB)
 
 	if [ $R -lt $newR ]; then
-		rStep=5
-		echo Red: $R $newR
+		rStep=$(sh rand.sh 1 5)
 	else
-		rStep=-5
-		echo Red: $R $newR
+		rStep=-$(sh rand.sh 1 5)
 	fi
+
+	#if [ $newG -lt $newB ]; then
+	#	if [ $newG -lt $newR ]; then
+	#		if [ $newB -lt $newR ]; then
+	#			newG=$newR
+	#		else
+	#			newG=$newB
+	#		fi
+	#	fi
+	#fi
 
         if [ $G -lt $newG ]; then
-                gStep=5
-                echo Green: $G $newG
+                gStep=$(sh rand.sh 1 5)
         else
-                gStep=-5
-                echo Green: $G $newG
+                gStep=-$(sh rand.sh 1 5)
         fi
 
-	if [ $newG -lt $newB ]; then
-		if [ $newG -lt $newR ]; then
-			if [ $newB -lt $newR ]; then
-				newG=$newR
-			else
-				newG=$newB
-			fi
-		fi
-	fi
+        #if [ $newB -lt $newR ]; then
+        #        temp=$newB
+        #        newB=$newR
+	#	newR=$temp
+        #fi
 
         if [ $B -lt $newB ]; then
-                bStep=5
-                echo Blue: $B $newB
+                bStep=$(sh rand.sh 1 5)
         else
-                bStep=-5
-                echo Blue: $B $newB
+                bStep=-$(sh rand.sh 1 5)
         fi
+
+	echo R $R $newR
+	echo G $G $newG
+	echo B $B $newB
 
 	for color in `seq $R $rStep $newR`
 	do
@@ -74,10 +112,5 @@ do
 
         B=$color
 
-	sleep $speed
-	sleep $speed
-	sleep $speed
-	sleep $speed
-	sleep $speed
 done
 sh reset-lightbar.sh $path
