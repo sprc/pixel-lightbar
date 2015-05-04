@@ -31,4 +31,4 @@ echo "4 $Rw $Gw $Bw" > "$path/led_rgb"
 sleep .2
 echo "4 $R $G $B" > "$path/led_rgb"
 
-sleep 300 && sh reset-lightbar.sh $path
+sleep 600 && sh reset-lightbar.sh $path
