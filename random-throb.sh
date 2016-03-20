@@ -13,24 +13,24 @@ else
 fi
 
 if [ " $3" = " " ]; then
-	minR=0
-	maxR=100
+	minR=50
+	maxR=200
 else
 	minR=$(echo $3 | cut -d\- -f1)
 	maxR=$(echo $3 | cut -d\- -f2)
 fi
 
 if [ " $4" = " " ]; then
-        minG=0
-        maxG=100
+        minG=75
+        maxG=200
 else
         minG=$(echo $4 | cut -d\- -f1)
         maxG=$(echo $4 | cut -d\- -f2)
 fi
 
 if [ " $5" = " " ]; then
-        minB=0
-        maxB=100
+        minB=100
+        maxB=255
 else
         minB=$(echo $5 | cut -d\- -f1)
         maxB=$(echo $5 | cut -d\- -f2)
@@ -51,9 +51,9 @@ do
 	newB=$(sh rand.sh $minB $maxB)
 
 	if [ $R -lt $newR ]; then
-		rStep=$(sh rand.sh 1 5)
+		rStep=$(sh rand.sh 1 10)
 	else
-		rStep=-$(sh rand.sh 1 5)
+		rStep=-$(sh rand.sh 1 10)
 	fi
 
 	#if [ $newG -lt $newB ]; then
@@ -67,9 +67,9 @@ do
 	#fi
 
         if [ $G -lt $newG ]; then
-                gStep=$(sh rand.sh 1 5)
+                gStep=$(sh rand.sh 1 10)
         else
-                gStep=-$(sh rand.sh 1 5)
+                gStep=-$(sh rand.sh 1 10)
         fi
 
         #if [ $newB -lt $newR ]; then
@@ -79,9 +79,9 @@ do
         #fi
 
         if [ $B -lt $newB ]; then
-                bStep=$(sh rand.sh 1 5)
+                bStep=$(sh rand.sh 1 10)
         else
-                bStep=-$(sh rand.sh 1 5)
+                bStep=-$(sh rand.sh 1 10)
         fi
 
 	echo R $R $newR
