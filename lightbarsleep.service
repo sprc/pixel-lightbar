@@ -1,0 +1,10 @@
+[Unit]
+Description=Pixel lightbar sleep
+Before=sleep.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/lightbar-service.sh sleep
+
+[Install]
+WantedBy=sleep.target

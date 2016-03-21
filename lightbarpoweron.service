@@ -1,0 +1,9 @@
+[Unit]
+Description=Pixel lightbar poweron
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/lightbar-service.sh "wake"
+
+[Install]
+WantedBy=multi-user.target

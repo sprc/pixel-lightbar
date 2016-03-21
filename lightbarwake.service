@@ -1,0 +1,10 @@
+[Unit]
+Description=Pixel lightbar wake
+After=suspend.target
+
+[Service]
+ExecStart=/usr/local/bin/lightbar-service.sh wake
+Type=simple
+
+[Install]
+WantedBy=suspend.target

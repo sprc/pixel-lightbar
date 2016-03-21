@@ -1,0 +1,8 @@
+[Unit]
+Description=Pixel lightbar customization
+
+[Service]
+ExecStart=/usr/local/bin/lightbar-service.sh run
+Type=forking
+Restart=always
+RestartSec=1
