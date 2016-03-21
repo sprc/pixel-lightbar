@@ -4,15 +4,24 @@ cd /
 path=$(find /sys 2>/dev/null -name led_rgb | sed "s/led_rgb//g")
 ts=$(date +"%-H:%M:%S")
 pre="lightbar.service [$ts]:"
+pwd=$(pwd)
 
-echo "$pre $phase: starting" > /dev/kmsg
+echo "$pre $phase: starting." > /dev/kmsg
 
 if [ "$phase" = "" ]; then
-	echo "$pre phase is null :("
+	echo "$pre phase is null :(" > /dev/kmsg
 	exit 0
 elif [ "$path" = "" ]; then
 	echo "$pre no led_rgb found :(" > /dev/kmsg
 	exit 0
+fi
+
+if [ "$phase" = "poweron" ]; then
+	cd "$path"
+	chmod 666 *
+	cd $pwd
+	echo "$pre $phase: switching phase to wake." > /dev/kmsg
+	phase="wake"
 fi
 
 if [ "$phase" = "sleep" ]; then

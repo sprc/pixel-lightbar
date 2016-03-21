@@ -3,7 +3,7 @@ Description=Pixel lightbar poweron
 After=syslog.target
 
 [Service]
-ExecStart=/usr/local/bin/lightbar-service.sh "wake"
+ExecStart=/usr/local/bin/lightbar-service.sh "poweron"
 
 [Install]
 WantedBy=multi-user.target
