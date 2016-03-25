@@ -1,6 +1,16 @@
 #!/bin/bash
 
 #-----
+# Find the lightbar
+#-----
+
+path=$(find /sys 2>/dev/null -name led_rgb | sed "s/led_rgb//g")
+
+if [ "$path" = "" ]; then
+	exit
+fi
+
+#-----
 # Array subscripts / looping values
 #-----
 fromTo="f t"
@@ -40,7 +50,6 @@ pieces[t]=$(echo ${values[t]} | awk -F" " "{ print NF }")
 for ft in $fromTo; do
 	for i in `seq 1 ${pieces[$ft]}`; do		
 		pc=$(echo "${values[$ft]}" | cut -d' ' -f$i)
-		echo $ft $i $pc
 		if [ "$led" = "" ]; then
 			led="$pc"
 		elif [ "${rgb[$ft,$led,r]}" = "" ]; then
@@ -97,15 +106,34 @@ done
 diff=0
 maxDiff=0
 for l in $leds; do
+	startLightString="$startLightString $l"
+	endLightString="$endLightString $l"
 	for c in $colors; do
 		((diff=${rgb[f,$l,$c]}-${rgb[t,$l,$c]}))
+		rgb[d,$l,$c]=$diff
 		if [ $diff -lt 0 ]; then
 			((diff=-1*diff))
 		fi
 		if [ $diff -gt $maxDiff ]; then
 			maxDiff=$diff
 		fi
+		startLightString="$startLightString ${rgb[f,$l,$c]}"
+		endLightString="$endLightString ${rgb[t,$l,$c]}"
 	done
 done	
 
-echo $maxDiff
+echo $startLightString > "$path/led_rgb"
+
+for step in `seq 0 $maxDiff`; do
+	lightString=""
+	for l in $leds; do
+		lightString="$lightString $l"
+		for c in $colors; do
+			diff=$(echo "scale=1; (${rgb[d,$l,$c]}/$maxDiff*$step)*-1" | bc)
+			rgb[n,$l,$c]=$(echo "scale=1; ${rgb[f,$l,$c]}+$diff" | bc)
+			lightString="$lightString ${rgb[n,$l,$c]}"
+		done
+	done
+	echo $lightString > "$path/led_rgb"
+done
+echo $endLightString > "$path/led_rgb"
