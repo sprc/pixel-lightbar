@@ -2,7 +2,10 @@
 sudo systemctl stop lightbar.service
 sudo systemctl stop lightbarwake.service
 sudo cp binary-lightbar.sh /usr/local/bin/
+sudo cp samus.sh /usr/local/bin/
 sudo cp clock.sh /usr/local/bin/
+sudo cp chromium.sh /usr/local/bin/
+sudo cp cloud.sh /usr/local/bin/
 sudo cp lightbar-service.sh /usr/local/bin/
 sudo cp *.service /etc/systemd/system/
 cd /etc/systemd/system

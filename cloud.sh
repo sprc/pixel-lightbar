@@ -1,8 +1,8 @@
 #!/bin/bash
 
-count=3
+count=12
 speed=0.5
-path=$(sh init.sh)
+path=$1
 
 for i in `seq 1 $count`
 do
@@ -30,4 +30,3 @@ do
 	echo "0 0 0 255  1 0 0 255  2 255 255 0  3 0 0 255" > "$path/led_rgb"
 	sleep $speed
 done
-sh reset-lightbar.sh $path

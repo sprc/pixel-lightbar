@@ -7,8 +7,6 @@ min=0
 hr=0
 count=0
 
-echo "Running clock.sh" > /dev/kmsg
-
 if [ "$path" = "" ]; then
 	echo "No path :(" > /dev/kmsg
 	exit 0
@@ -32,7 +30,7 @@ while [ $dn -lt 1 ]; do
 	#echo "$hour:$min:$sec - "$bar
 	echo "$bar" > "$path/led_rgb"
 	count=$count+1
-	if [ $count -gt 120 ]; then
+	if [ $count -gt 60 ]; then
 		dn=1
 	fi
 	sleep 0.47
