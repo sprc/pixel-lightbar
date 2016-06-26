@@ -30,8 +30,8 @@ while [ $dn -lt 1 ]; do
 	#echo "$hour:$min:$sec - "$bar
 	echo "$bar" > "$path/led_rgb"
 	count=$count+1
-	if [ $count -gt 60 ]; then
+	if [ $count -gt 600 ]; then
 		dn=1
 	fi
-	sleep 0.47
+	sleep 0.1
 done

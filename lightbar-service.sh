@@ -62,7 +62,7 @@ if [ "$phase" = "wake" ]; then
 	echo stop > "$path/sequence"
 	for i in `seq 0 5 255`; do
 	        echo "4 $i $i $i" > "$path/led_rgb"
-		sleep 0.15
+		#sleep 0.15
 	done
 	systemctl restart lightbar.service --force --no-block
 fi
@@ -112,8 +112,12 @@ if [ "$phase" = "run" ]; then
 		lightbarScript="chromium.sh"
 	elif [ "$lightbarScript" = "cloud" ]; then
 		lightbarScript="cloud.sh"
+	elif [ "$lightbarScript" = "white" ]; then
+		lightbarScript="white.sh"
+	elif [ "$lightbarScript" = "sky" ]; then
+		lightbarScript="sky.sh"
 	else
-		lightbarScript="samus.sh"
+		lightbarScript="white.sh"
 	fi
 
 	#echo "lightbar.service: bashing \"/usr/local/bin/$lightbarScript\" \"$path\"" > /dev/kmsg

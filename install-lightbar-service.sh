@@ -6,6 +6,10 @@ sudo cp samus.sh /usr/local/bin/
 sudo cp clock.sh /usr/local/bin/
 sudo cp chromium.sh /usr/local/bin/
 sudo cp cloud.sh /usr/local/bin/
+sudo cp white.sh /usr/local/bin/
+sudo cp sky.sh /usr/local/bin/
+sudo cp colorshift.sh /usr/local/bin/
+sudo cp colorwheel.sh /usr/local/bin/
 sudo cp lightbar-service.sh /usr/local/bin/
 sudo cp *.service /etc/systemd/system/
 cd /etc/systemd/system

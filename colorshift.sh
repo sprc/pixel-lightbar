@@ -22,6 +22,7 @@ colors="r g b"
 #-----
 declare -A rgb
 declare -A values
+declare -A pieces
 
 #-----
 # Param 1 = "From" colors, param 2 = "To" colors
@@ -71,7 +72,7 @@ for ft in $fromTo; do
 	if [ "${rgb[$ft,4,r]}" != "" ]; then
 		for l in $leds; do
 			for c in $colors; do
-				rgb[$ft,$l,$c]="${rgb[$ft,4,$c]}"
+				rgb[$ft,$l,$c]=${rgb[$ft,4,$c]}
 			done
 		done
 	fi
@@ -109,7 +110,7 @@ for l in $leds; do
 	startLightString="$startLightString $l"
 	endLightString="$endLightString $l"
 	for c in $colors; do
-		((diff=${rgb[f,$l,$c]}-${rgb[t,$l,$c]}))
+		((diff=${rgb[t,$l,$c]}-${rgb[f,$l,$c]}))
 		rgb[d,$l,$c]=$diff
 		if [ $diff -lt 0 ]; then
 			((diff=-1*diff))
@@ -124,16 +125,22 @@ done
 
 echo $startLightString > "$path/led_rgb"
 
-for step in `seq 0 $maxDiff`; do
+for step in `seq 1 1 $maxDiff`; do
 	lightString=""
+	diffString=""
 	for l in $leds; do
 		lightString="$lightString $l"
+		diffString="$diffString $l"
 		for c in $colors; do
-			diff=$(echo "scale=1; (${rgb[d,$l,$c]}/$maxDiff*$step)*-1" | bc)
-			rgb[n,$l,$c]=$(echo "scale=1; ${rgb[f,$l,$c]}+$diff" | bc)
+			diff=$(echo "scale=7; (${rgb[d,$l,$c]}/$maxDiff*$step)" | bc | awk '{printf "%f", $0}' | cut -d'.' -f1)
+			diffString="$diffString $diff"
+			rgb[n,$l,$c]=$(echo "scale=0; ${rgb[f,$l,$c]}+$diff" | bc )
 			lightString="$lightString ${rgb[n,$l,$c]}"
 		done
 	done
+	#echo $startLightString
+	#echo $diffString
+	#echo $lightString
 	echo $lightString > "$path/led_rgb"
 done
 echo $endLightString > "$path/led_rgb"
