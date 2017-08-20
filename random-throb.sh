@@ -1,9 +1,10 @@
 #!/bin/bash
 
-if [ " $1" = " " ]; then
-	count=2500
-else
-	count=$1
+path=$1
+
+if [ "$path" = "" ]; then
+        echo "No path :(" > /dev/kmsg
+        exit 0
 fi
 
 if [ " $2" = " " ]; then
@@ -36,57 +37,35 @@ else
         maxB=$(echo $5 | cut -d\- -f2)
 fi
 
-path=$(sh init.sh)
+R=$(rand.sh $minR $maxR)
+G=$(rand.sh $minG $maxG)
+B=$(rand.sh $minB $maxB)
 
-R=$(sh rand.sh $minR $maxR)
-G=$(sh rand.sh $minG $maxG)
-B=$(sh rand.sh $minB $maxB)
-
-for i in `seq 1 $count`
+while true
 do
-	sh cycle.sh $path
+	echo stop > "$path/sequence"
 
-	newR=$(sh rand.sh $minR $maxR)
-	newG=$(sh rand.sh $minG $maxG)
-	newB=$(sh rand.sh $minB $maxB)
+	newR=$(rand.sh $minR $maxR)
+	newG=$(rand.sh $minG $maxG)
+	newB=$(rand.sh $minB $maxB)
 
 	if [ $R -lt $newR ]; then
-		rStep=$(sh rand.sh 1 10)
+		rStep=$(rand.sh 1 10)
 	else
-		rStep=-$(sh rand.sh 1 10)
+		rStep=-$(rand.sh 1 10)
 	fi
 
-	#if [ $newG -lt $newB ]; then
-	#	if [ $newG -lt $newR ]; then
-	#		if [ $newB -lt $newR ]; then
-	#			newG=$newR
-	#		else
-	#			newG=$newB
-	#		fi
-	#	fi
-	#fi
-
         if [ $G -lt $newG ]; then
-                gStep=$(sh rand.sh 1 10)
+                gStep=$(rand.sh 1 10)
         else
-                gStep=-$(sh rand.sh 1 10)
+                gStep=-$(rand.sh 1 10)
         fi
-
-        #if [ $newB -lt $newR ]; then
-        #        temp=$newB
-        #        newB=$newR
-	#	newR=$temp
-        #fi
 
         if [ $B -lt $newB ]; then
-                bStep=$(sh rand.sh 1 10)
+                bStep=$(rand.sh 1 10)
         else
-                bStep=-$(sh rand.sh 1 10)
+                bStep=-$(rand.sh 1 10)
         fi
-
-	echo R $R $newR
-	echo G $G $newG
-	echo B $B $newB
 
 	for color in `seq $R $rStep $newR`
 	do
@@ -113,4 +92,3 @@ do
         B=$color
 
 done
-sh reset-lightbar.sh $path
