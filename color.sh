@@ -1,6 +1,6 @@
 #!/bin/bash
 
-path=$(sh init.sh)
+path=$(init.sh)
 
 Rw=230
 Gw=255
@@ -21,14 +21,6 @@ if [ " " = " $3" ]; then
         B=$Bw
 fi
 
-sh cycle.sh $path
-
-echo "4 $R $G $B" > "$path/led_rgb"
-sleep .2
-echo "4 255 255 255" > "$path/led_rgb"
-sleep .2
-echo "4 $Rw $Gw $Bw" > "$path/led_rgb"
-sleep .2
 echo "4 $R $G $B" > "$path/led_rgb"
 
-sleep 600 && sh reset-lightbar.sh $path
+sleep 60

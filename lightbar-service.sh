@@ -6,7 +6,7 @@ path=$(find /sys 2>/dev/null -name led_rgb | sed "s/led_rgb//g")
 ts=$(date +"%-H:%M:%S")
 pre="lightbar.service [$ts]:"
 
-#echo "$pre $phase: starting." > /dev/kmsg
+echo "$pre $phase: starting." > /dev/kmsg
 
 #------
 # Failure conditions:
@@ -32,7 +32,7 @@ if [ "$phase" = "poweron" ]; then
 	cd "$path"
 	chmod 666 *
 	cd $pwd
-	#echo "$pre $phase: switching phase to wake." > /dev/kmsg
+	echo "$pre $phase: switching phase to wake." > /dev/kmsg
 	phase="wake"
 fi
 
@@ -42,9 +42,24 @@ fi
 # - Run the S5 sequence (which turns the lightbar off)
 #------
 if [ "$phase" = "sleep" ]; then
+
+	ts=$(date +"%-H:%M:%S")
+	pre="lightbar.service [$ts]:"
+	echo "$pre stopping lightbar service" > /dev/kmsg
+
 	systemctl stop lightbar.service --force
-        echo S5 > "$path/sequence"
-        echo run > "$path/sequence"
+
+	ts=$(date +"%-H:%M:%S")
+	pre="lightbar.service [$ts]:"
+	echo "$pre done stopping lightbar service" > /dev/kmsg
+
+	sleep 1
+
+	#echo "4 0 0 0" > "$path/led_rgb"
+	#sleep 1
+	echo S5 > "$path/sequence"
+	#sleep 1
+	echo run > "$path/sequence"
 fi
 
 #------
@@ -60,12 +75,16 @@ if [ "$phase" = "wake" ]; then
 	echo S0 > "$path/sequence"
 	echo run > "$path/sequence"
 	echo stop > "$path/sequence"
-	for i in `seq 0 5 255`; do
-	        echo "4 $i $i $i" > "$path/led_rgb"
-		#sleep 0.15
-	done
+	#for i in `seq 0 5 255`; do
+	#        echo "4 $i $i $i" > "$path/led_rgb"
+	#	#sleep 0.15
+	#done
+	bash snow.sh
 	systemctl restart lightbar.service --force --no-block
 fi
+
+ts=$(date +"%-H:%M:%S")
+pre="lightbar.service [$ts]:"
 
 #------
 # Run phase:
@@ -100,6 +119,7 @@ if [ "$phase" = "run" ]; then
 			if [ -f ./.lightbar ]; then
 				lightbarScript=$(cat ./.lightbar | sed -n 1p | cut -d' ' -f1 | cut -d'.' -f1)
 				lightbarConfigFound=1
+				echo "$pre .lightbar found via $user" > /dev/kmsg
 			fi
 		fi
 	done
@@ -108,23 +128,37 @@ if [ "$phase" = "run" ]; then
 		lightbarScript="samus.sh"
 	elif [ "$lightbarScript" = "clock" ]; then
 		lightbarScript="clock.sh"
+	elif [ "$lightbarScript" = "blue" ]; then
+		lightbarScript="blue.sh"
+	elif [ "$lightbarScript" = "red" ]; then
+		lightbarScript="red.sh"
+	elif [ "$lightbarScript" = "redchromium" ]; then
+		lightbarScript="redchromium.sh"
 	elif [ "$lightbarScript" = "chromium" ]; then
 		lightbarScript="chromium.sh"
 	elif [ "$lightbarScript" = "cloud" ]; then
 		lightbarScript="cloud.sh"
 	elif [ "$lightbarScript" = "white" ]; then
 		lightbarScript="white.sh"
+	elif [ "$lightbarScript" = "offwhite" ]; then
+		lightbarScript="offwhite.sh"
 	elif [ "$lightbarScript" = "sky" ]; then
 		lightbarScript="sky.sh"
+	elif [ "$lightbarScript" = "green" ]; then
+		lightbarScript="green.sh"
+	elif [ "$lightbarScript" = "random" ]; then
+		lightbarScript="random-throb.sh"
 	else
-		lightbarScript="white.sh"
+		lightbarScript="whiteshort.sh"
 	fi
 
-	#echo "lightbar.service: bashing \"/usr/local/bin/$lightbarScript\" \"$path\"" > /dev/kmsg
+	echo "$pre bashing $lightbarScript" > /dev/kmsg
 
 	bash "/usr/local/bin/$lightbarScript" "$path"
+
+	echo "$pre done bashing $lightbarScript" > /dev/kmsg
 fi
 
-#ts=$(date +"%-H:%M:%S")
-#pre="lightbar.service [$ts]:"
-#echo "$pre $phase: done." > /dev/kmsg
+ts=$(date +"%-H:%M:%S")
+pre="lightbar.service [$ts]:"
+echo "$pre $phase: done." > /dev/kmsg
